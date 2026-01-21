@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Tư Tưởng Hồ Chí Minh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, rgba(196, 30, 58, 0.85) 0%, rgba(0, 0, 0, 0.75) 50%, rgba(212, 175, 55, 0.85) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .quiz-box {
+            background: linear-gradient(180deg, #ffffff 0%, #f0f8ff 100%);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            border-left: 5px solid #c41e3a;
+        }
+
+        .leaderboard-box {
+            background: linear-gradient(180deg, #ffffff 0%, #f0f8ff 100%);
+            padding: 30px;
+            width: 100%;
+            max-width: 350px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            border-left: 5px solid #d4af37;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        h2 {
+            color: #c41e3a;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: border 0.3s;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #c41e3a;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(196, 30, 58, 0.4);
+        }
+
+        .user-info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #856404;
+            font-weight: bold;
+        }
+
+        .question {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .answer {
+            display: block;
+            width: 100%;
+            margin: 12px 0;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .answer:hover {
+            background: #fff3cd;
+            border-color: #d4af37;
+            transform: translateX(5px);
+        }
+
+        .correct {
+            background: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724;
+        }
+
+        .wrong {
+            background: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24;
+        }
+
+        .next-btn {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(196, 30, 58, 0.4);
+        }
+
+        .next-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-box {
+            text-align: center;
+            color: #c41e3a;
+        }
+
+        .result-box h2 {
+            font-size: 32px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 20px;
+            color: #333;
+            margin: 15px 0;
+        }
+
+        .score {
+            font-size: 48px;
+            font-weight: bold;
+            color: #d4af37;
+            margin: 20px 0;
+        }
+
+        .leaderboard-title {
+            color: #d4af37;
+            font-size: 22px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            background: #f9f9f9;
+            margin-bottom: 8px;
+            border-radius: 5px;
+        }
+
+        .rank {
+            background: #c41e3a;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .rank.gold {
+            background: #d4af37;
+            color: #333;
+        }
+
+        .rank.silver {
+            background: #c0c0c0;
+            color: #333;
+        }
+
+        .rank.bronze {
+            background: #cd7f32;
+        }
+
+        .name {
+            flex-grow: 1;
+            color: #333;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .points {
+            color: #c41e3a;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .leaderboard-box {
+                max-width: 100%;
+                max-height: 300px;
+            }
+
+            .quiz-box {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="quiz-box">
+        <h2>🎯 Quiz cuối giờ</h2>
+        
+        <div id="loginSection" class="login-form">
+            <input type="text" id="playerName" placeholder="Nhập tên của bạn..." maxlength="30">
+            <button class="login-btn" onclick="startQuiz()">Bắt đầu</button>
+        </div>
+
+        <div id="quizSection" style="display: none;">
+            <div class="user-info" id="userInfo"></div>
+            <div class="question" id="question"></div>
+            <div id="answers"></div>
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo</button>
+        </div>
+
+        <div id="resultSection" style="display: none;"></div>
+    </div>
+
+    <div class="leaderboard-box">
+        <div class="leaderboard-title">🏆 Bảng xếp hạng</div>
+        <div id="leaderboard"></div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "Hồ Chí Minh sinh năm nào?",
+            answers: ["1890", "1892", "1894", "1896"],
+            correct: 0,
+            background: "url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&h=800&fit=crop') center/cover"
+        },
+        {
+            question: "Tên thật của Hồ Chí Minh là gì?",
+            answers: ["Nguyễn Ái Quốc", "Nguyễn Sinh Cung", "Nguyễn Tất Thành", "Tất cả đều đúng"],
+            correct: 3,
+            background: "url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=800&fit=crop') center/cover"
+        },
+        {
+            question: "Ngày Quốc khánh Việt Nam là?",
+            answers: ["1/1", "2/9", "30/4", "19/12"],
+            correct: 1,
+            background: "url('https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1200&h=800&fit=crop') center/cover"
+        }
+    ];
+
+    let playerName = "";
+    let current = 0;
+    let score = 0;
+    let answered = false;
+
+    function startQuiz() {
+        const name = document.getElementById("playerName").value.trim();
+        if (!name) {
+            alert("Vui lòng nhập tên của bạn!");
+            return;
+        }
+        playerName = name;
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("quizSection").style.display = "block";
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        answered = false;
+        document.getElementById("nextBtn").disabled = true;
+        document.getElementById("userInfo").innerText = `👤 ${playerName} | Câu ${current + 1}/${questions.length}`;
+        document.body.style.background = questions[current].background;
+        document.getElementById("question").innerText = questions[current].question;
+
+        const answersDiv = document.getElementById("answers");
+        answersDiv.innerHTML = "";
+
+        questions[current].answers.forEach((ans, i) => {
+            const btn = document.createElement("button");
+            btn.className = "answer";
+            btn.innerText = ans;
+            btn.onclick = () => selectAnswer(i, btn);
+            answersDiv.appendChild(btn);
+        });
+    }
+
+    function selectAnswer(index, btn) {
+        if (answered) return;
+        answered = true;
+        document.getElementById("nextBtn").disabled = false;
+
+        const correctIndex = questions[current].correct;
+        const buttons = document.querySelectorAll(".answer");
+
+        buttons[correctIndex].classList.add("correct");
+
+        if (index === correctIndex) {
+            score++;
+        } else {
+            btn.classList.add("wrong");
+        }
+    }
+
+    function nextQuestion() {
+        if (!answered) return;
+
+        current++;
+        if (current < questions.length) {
+            loadQuestion();
+        } else {
+            saveScore();
+        }
+    }
+
+    function saveScore() {
+        document.getElementById("quizSection").style.display = "none";
+        document.getElementById("resultSection").style.display = "block";
+        const totalPoints = score * 10;
+        document.getElementById("resultSection").innerHTML = `
+            <div class="result-box">
+                <h2>🎉 Kết thúc!</h2>
+                <p>Kết quả của ${playerName}:</p>
+                <div class="score">${totalPoints} điểm</div>
+                <p style="font-size: 16px; color: #666; margin-top: 10px;">(${score}/${questions.length} câu đúng)</p>
+                <p style="font-size: 18px; margin-top: 20px;">
+                    ${score === questions.length ? '🌟 Xuất sắc!' : score >= questions.length - 1 ? '👍 Tốt lắm!' : '💪 Tiếp tục cố gắng!'}
+                </p>
+                <button class="next-btn" style="margin-top: 30px;" onclick="location.reload()">Chơi lại</button>
+            </div>
+        `;
+
+        // Lưu vào localStorage
+        let scores = JSON.parse(localStorage.getItem("quizScores")) || [];
+        const points = score * 10;
+        const newScore = { name: playerName, score: score, points: points, total: questions.length, time: new Date().toLocaleString('vi-VN') };
+        scores.push(newScore);
+        scores.sort((a, b) => b.points - a.points);
+        localStorage.setItem("quizScores", JSON.stringify(scores));
+
+        console.log("Điểm lưu:", points, "Dữ liệu:", newScore);
+        updateLeaderboard();
+    }
+
+    function updateLeaderboard() {
+        const leaderboard = document.getElementById("leaderboard");
+        
+        let scores = JSON.parse(localStorage.getItem("quizScores")) || [];
+        
+        // Chuyển đổi dữ liệu cũ (không có points) thành dữ liệu mới
+        scores = scores.map(item => {
+            if (!item.points) {
+                item.points = item.score * 10;
+            }
+            return item;
+        });
+        
+        // Gom nhóm theo tên và lấy điểm cao nhất
+        let grouped = {};
+        scores.forEach(item => {
+            if (!grouped[item.name] || grouped[item.name].points < item.points) {
+                grouped[item.name] = item;
+            }
+        });
+        
+        // Chuyển lại thành mảng và sắp xếp
+        let finalScores = Object.values(grouped);
+        finalScores.sort((a, b) => b.points - a.points);
+
+        leaderboard.innerHTML = "";
+
+        if (finalScores.length === 0) {
+            leaderboard.innerHTML = "<p style='text-align: center; color: #999;'>Chưa có ai hoàn thành!</p>";
+            return;
+        }
+
+        // Tính rank với cùng điểm thì cùng top
+        let currentRank = 1;
+        let prevScore = null;
+        let countSameScore = 0;
+
+        finalScores.slice(0, 50).forEach((item, index) => {
+            // Nếu điểm khác với người trước, cập nhật rank
+            if (prevScore !== null && item.points !== prevScore) {
+                currentRank += countSameScore;
+                countSameScore = 0;
+            }
+            countSameScore++;
+
+            const rankClass = currentRank === 1 ? "gold" : currentRank === 2 ? "silver" : currentRank === 3 ? "bronze" : "";
+            const medal = currentRank === 1 ? "🥇" : currentRank === 2 ? "🥈" : currentRank === 3 ? "🥉" : "";
+            
+            const div = document.createElement("div");
+            div.className = "leaderboard-item";
+            div.innerHTML = `
+                <div class="rank ${rankClass}">${currentRank}</div>
+                <div class="name">${medal} ${item.name}</div>
+                <div class="points">${item.points} điểm</div>
+            `;
+            leaderboard.appendChild(div);
+
+            prevScore = item.points;
+        });
+    }
+
+    // Cập nhật bảng xếp hạng mỗi 1 giây
+    setInterval(updateLeaderboard, 1000);
+    updateLeaderboard();
+</script>
+
+</body>
+</html>
